@@ -77,39 +77,42 @@ void readAndPrintInputAsHex(FILE* input) {
   }
 }
 
-int* calcBits(unsigned char* data) {
-  printf("Entering calcBits\n");
-  int target = (intptr_t) data - '0';
-  int* out[8];
-
-  for(size_t i = 0; i < 8; i++) {
-    printf("for loop: %lu\n", i);
-
-    if (target % 2 == 1) {
-      out[i] = (int*) 1;
-      printf("out[%lu] = 1\n", i);
-    } else {
-      out[i] = (int*) 0;
-      printf("out[%lu] = 0\n", i);
-    }
-    printf("out[%lu] = %d\n", i, out[i]);
-    target = target / 2;
-  }
-
-  printf("Leaving calcBits\n");
-  return *out;
-}
-
+/**
+ * Writes data to stdout in bits.
+ *
+ * See myxxd.md for details.
+ *
+ * data: an array of no more than 8 characters
+ * size: the size of the array
+ **/
 void printDataAsBits(unsigned char* data, int numBytesRead) {
-  printf("Entering printDataAsBits\n");
+  // printf("Data size: %ld\n", sizeof(data));
+  for (size_t i = 0; i < 6; i++) {
+    int target = (int) data[i];
+    // printf("target: %d\n", target);
+    if (target < 0) {
+      for (size_t j = 0; j < 8; j++) {
+        printf(" ");
+      }
+    } else {
+      int out[8];
 
-  for (size_t i = 0; i < 8; i++) {
-    int* out = calcBits((unsigned char*) data[i]);
+      for(int j = 7; j >= 0; j--) {
+        // printf("for: %d, target: %d\n", j, target);
+        if (target % 2 == 1) {
+          out[j] = 1;
+        } else {
+          out[j] = 0;
+        }
 
-    if (out == NULL) printf("out = NULL\n");
+        target /= 2;
+      }
 
-    for (size_t j = 0; j < 8; j++) {
-      printf("%d", out[j]);
+      for (size_t j = 0; j < 8; j++) {
+        printf("%d", out[j]);
+      }
+
+      printf(" ");
     }
   }
 }
@@ -122,23 +125,23 @@ void printDataAsBits(unsigned char* data, int numBytesRead) {
  * input: input stream
  **/
 void readAndPrintInputAsBits(FILE *input) {
-  printf("Entering readAndPrintInputAsBits\n");
-  unsigned char data[8];
-  int numBytesRead = fread(data, 1, 8, input);
+  unsigned char data[6];
+  int numBytesRead = fread(data, 1, 6, input);
   unsigned int offset = 0;
 
   while (numBytesRead != 0) {
-    printf("%02x:", offset);
+    printf("%08x: ", offset);
     offset += numBytesRead;
     printDataAsBits(data, numBytesRead);
     printf(" ");
     printDataAsChars(data, numBytesRead);
     printf("\n");
-    numBytesRead = fread(data, 1, 8, input);
+    numBytesRead = fread(data, 1, 6, input);
   }
 }
 
 int main(int argc, char **argv) {
+  printf("Started\n");
   int bits = FALSE;
   FILE *input = parseCommandLine(argc, argv, &bits);
 
