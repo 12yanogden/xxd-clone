@@ -34,19 +34,6 @@ FILE* parseCommandLine(int argc, char** argv, int* bits) {
   return stdin;
 }
 
-
-/**
- * Writes data to stdout in hexadecimal.
- *
- * See myxxd.md for details.
- *
- * data: an array of no more than 16 characters
- * size: the size of the array
- **/
-void printDataAsHex(unsigned char* data, size_t size) {
-  printf("TODO 1: printDataAsHex (2)");
-}
-
 /**
  * Writes data to stdout as characters.
  *
@@ -57,17 +44,57 @@ void printDataAsHex(unsigned char* data, size_t size) {
  **/
 void printDataAsChars(unsigned char* data, size_t size) {
   for (size_t i = 0; i < size; i++) {
-    printf("%c", data[i]);
+    char out = data[i];
+
+    if ((int) out == 10) {
+      out = '.';
+    }
+
+    printf("%c", out);
   }
 }
 
+/**
+ * Writes data to stdout in hexadecimal.
+ *
+ * See myxxd.md for details.
+ *
+ * data: an array of no more than 16 characters
+ * size: the size of the array
+ **/
+void printDataAsHex(unsigned char* data, size_t size) {
+  for (size_t i = 0; i < 16; i++) {
+    // printf("for: %lu\n", i);
+    int target = (int) data[i];
+
+    if (target == 0) {
+      for (size_t j = 0; j < 2; j++) {
+        printf(" ");
+      }
+    } else {
+      printf("%02x", target);
+
+      if (i % 2 == 1) {
+        printf(" ");
+      }
+    }
+  }
+}
+
+/**
+ * Hex output for xxd.
+ *
+ * See myxxd.md for details.
+ *
+ * input: input stream
+ **/
 void readAndPrintInputAsHex(FILE* input) {
   unsigned char data[16];
   int numBytesRead = fread(data, 1, 16, input);
   unsigned int offset = 0;
 
   while (numBytesRead != 0) {
-    printf("%08x:", offset);
+    printf("%08x: ", offset);
     offset += numBytesRead;
     printDataAsHex(data, numBytesRead);
     printf("  ");
@@ -86,11 +113,10 @@ void readAndPrintInputAsHex(FILE* input) {
  * size: the size of the array
  **/
 void printDataAsBits(unsigned char* data, int numBytesRead) {
-  // printf("Data size: %ld\n", sizeof(data));
   for (size_t i = 0; i < 6; i++) {
     int target = (int) data[i];
-    // printf("target: %d\n", target);
-    if (target < 0) {
+
+    if (target == 0) {
       for (size_t j = 0; j < 8; j++) {
         printf(" ");
       }
@@ -98,7 +124,6 @@ void printDataAsBits(unsigned char* data, int numBytesRead) {
       int out[8];
 
       for(int j = 7; j >= 0; j--) {
-        // printf("for: %d, target: %d\n", j, target);
         if (target % 2 == 1) {
           out[j] = 1;
         } else {
