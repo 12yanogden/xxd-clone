@@ -1,4 +1,4 @@
-Objectives
+## Objectives
 Compile a C program with debug symbols and all warnings enabled
 Write simple C programs with if-statements, while-statements, and multiple functions
 Write formatted data to stdout with printf
@@ -10,7 +10,7 @@ The goal of this lab is to write a program that mimics some of the functionality
 
 The myxxd.c file contains code to parse the command line options (parseCommandLine) and then call the appropriate output function for the hex dump (readAndPrintInputAsHex) or the bits dump (readAndPrintInputAsBits). The file also contains an implementation of readAndPrintInputAsHex to handle reading from stdin using the fread C library function. The implementation of readAndPrintInputAsHex calls two unimplemented functions printDataAsHex and printDataAsChars that produce the actual hex dump. Implementing these two functions is the starting point for the lab. Once these are implemented and tested, follow the same structure to implement readAndPrintInputAsBits: the function should be implemented using the same decomposition of the problem as in readAndPrintInputAsHex but differ in the number of bytes read at a time by fread and how those bytes are displayed in the output.
 
-Where to start?
+## Where to start?
 Read all of the writeup.
 Play with xxd and I/O redirection as you read about them in the writeup.
 Study the starter code in myxxd.c and correlate it with the writeup.
@@ -39,10 +39,10 @@ The labs are in a git repository named byu-cs-224-labs. There is a button on the
 git clone https://bitbucket.org/byucs224/byu-cs-224-labs/src/master/
 git is not part of this course. It is just a convenient way to distribute files. Once the files exist on the machine, nothing else is done with git until the next lab, in which case the command git pull in the directory will get the new files or the repository can be cloned again in a different location.
 
-Project Details
+## Project Details
 Carefully reading the project details is likely to save hours in completing the lab. Take time to understand what needs to be done, then plan out how to get it done, and finally do it. Each of the sections below is intended to answer the what and how for this project.
 
-Building and Running the Program
+## Building and Running the Program
 The program is build with the following command.
 
 $ gcc -Wall -g myxxd.c -o myxxd
@@ -122,7 +122,7 @@ $ echo "What does this output mean?" | xxd -bits
 00000018: 01100001 01101110 00111111 00001010                    an?.
 As before, padding is added to fill partially complete lines. Functionality for this section is to be implemented in the void readAndPrintInputAsBits(FILE* input) function following the pattern in its hex dump counterpart.
 
-Printing Bits
+## Printing Bits
 Implement the algorithm covered in class to convert an unsigned char to a string in bits. The pseudo-code is below and takes as input an unsigned char with name x.
 
 /* repeat 8 times */
@@ -144,7 +144,7 @@ Iteration 6: x = 0  --> 0
 Iteration 7: x = 0  --> 0
 The output string should be 00001101. Iteration 0 generated the least significant bit 1, and iteration 7 generated the most significant bit 0.
 
-Checking Output
+## Checking Output
 There are two ways to check the output: visually and programatically. Visually comparing output is fine for small inputs but breakdowns for big (more complex) inputs. The diff is a programmatic solution in that it compares two files line by line and reports any differences (see man diff). Using diff though requires two files files to compare.
 
 Output stream redirection captures stdout and redirects it to a file. The redirect is with the '>' symbol. Here is an example of how it can be used with diff to compare two files.
@@ -179,5 +179,5 @@ Here I forgot to increment i in the loop body, so for sure this program will not
 
 The command line provides a very easy solution to a non-terminating program: CTRL-c (^c). Like CTRL-d, hold down the control key and this time type c while holding the key. After a brief pause the program will exit and give back the command line prompt. Never kill the shell to fix an infinite loop. Killing the shell leaves the program running and will seriously bog down the machine.
 
-I need a debugger!
+## I need a debugger!
 The debugger is gdb and it is available from the command line if needed. This primer is a good starting point. There are many good online resources as well.
